@@ -2,7 +2,7 @@ package com.sivalabs.bookmarker.domain;
 
 import jakarta.validation.constraints.NotEmpty;
 
-public class CreateBookmarkRequest {
+public class UpdateBookmarkRequest {
     @NotEmpty(message = "Title should not be empty")
     private String title;
 
