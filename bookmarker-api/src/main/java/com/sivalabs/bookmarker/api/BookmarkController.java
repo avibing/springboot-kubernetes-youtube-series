@@ -1,31 +1,24 @@
 package com.sivalabs.bookmarker.api;
 
-import com.sivalabs.bookmarker.domain.BookmarkDTO;
-import com.sivalabs.bookmarker.domain.BookmarkService;
-import com.sivalabs.bookmarker.domain.BookmarksDTO;
-import com.sivalabs.bookmarker.domain.CreateBookmarkRequest;
-import lombok.RequiredArgsConstructor;
+import com.sivalabs.bookmarker.domain.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/bookmarks")
-@RequiredArgsConstructor
 public class BookmarkController {
     private final BookmarkService bookmarkService;
+
+    public BookmarkController(BookmarkService bookmarkService) {
+        this.bookmarkService = bookmarkService;
+    }
 
     @GetMapping
     public BookmarksDTO getBookmarks(@RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "") String query) {
-        if(query == null || query.trim().length() == 0) {
+        if (query == null || query.trim().isEmpty()) {
             return bookmarkService.getBookmarks(page);
         }
         return bookmarkService.searchBookmarks(query, page);
@@ -36,4 +29,11 @@ public class BookmarkController {
     public BookmarkDTO createBookmark(@RequestBody @Valid CreateBookmarkRequest request) {
         return bookmarkService.createBookmark(request);
     }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookmarkDTO updateBookmark(@RequestBody @Valid UpdateBookmarkRequest request) {
+        return bookmarkService.updateBookmark(request);
+    }
+
 }
