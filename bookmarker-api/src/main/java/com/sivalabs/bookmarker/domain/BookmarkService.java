@@ -1,5 +1,6 @@
 package com.sivalabs.bookmarker.domain;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,5 +39,11 @@ public class BookmarkService {
         Bookmark bookmark = new Bookmark(null, request.getTitle(), request.getUrl(), Instant.now());
         Bookmark savedBookmark = repository.save(bookmark);
         return bookmarkMapper.toDTO(savedBookmark);
+    }
+
+    public String deleteBookmark(@Valid DeleteBookmarkRequest request) {
+        Bookmark bookmark = new Bookmark(null, request.getTitle(), request.getUrl(), Instant.now());
+        repository.delete(bookmark);
+        return "Bookmark deleted successfully";
     }
 }
