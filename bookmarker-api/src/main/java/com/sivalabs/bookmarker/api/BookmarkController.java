@@ -9,14 +9,17 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/bookmarks")
-@RequiredArgsConstructor
 public class BookmarkController {
     private final BookmarkService bookmarkService;
+
+    public BookmarkController(BookmarkService bookmarkService) {
+        this.bookmarkService = bookmarkService;
+    }
 
     @GetMapping
     public BookmarksDTO getBookmarks(@RequestParam(defaultValue = "1") Integer page,
                                      @RequestParam(defaultValue = "") String query) {
-        if(query == null || query.trim().length() == 0) {
+        if (query == null || query.trim().isEmpty()) {
             return bookmarkService.getBookmarks(page);
         }
         return bookmarkService.searchBookmarks(query, page);
@@ -27,6 +30,13 @@ public class BookmarkController {
     public BookmarkDTO createBookmark(@RequestBody @Valid CreateBookmarkRequest request) {
         return bookmarkService.createBookmark(request);
     }
+
+    @PutMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public BookmarkDTO updateBookmark(@RequestBody @Valid UpdateBookmarkRequest request) {
+        return bookmarkService.updateBookmark(request);
+    }
+
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)

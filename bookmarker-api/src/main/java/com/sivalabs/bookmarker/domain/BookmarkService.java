@@ -13,10 +13,14 @@ import java.time.Instant;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 public class BookmarkService {
     private final BookmarkRepository repository;
     private final BookmarkMapper bookmarkMapper;
+
+    public BookmarkService(BookmarkRepository repository, BookmarkMapper bookmarkMapper) {
+        this.repository = repository;
+        this.bookmarkMapper = bookmarkMapper;
+    }
 
     @Transactional(readOnly = true)
     public BookmarksDTO getBookmarks(Integer page) {
@@ -36,6 +40,12 @@ public class BookmarkService {
     }
 
     public BookmarkDTO createBookmark(CreateBookmarkRequest request) {
+        Bookmark bookmark = new Bookmark(null, request.getTitle(), request.getUrl(), Instant.now());
+        Bookmark savedBookmark = repository.save(bookmark);
+        return bookmarkMapper.toDTO(savedBookmark);
+    }
+
+    public BookmarkDTO updateBookmark(UpdateBookmarkRequest request) {
         Bookmark bookmark = new Bookmark(null, request.getTitle(), request.getUrl(), Instant.now());
         Bookmark savedBookmark = repository.save(bookmark);
         return bookmarkMapper.toDTO(savedBookmark);
